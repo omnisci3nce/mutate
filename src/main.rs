@@ -1,4 +1,4 @@
-use rand::{distributions::Uniform, prelude::Distribution, Rng, seq::SliceRandom};
+use rand::{distributions::Uniform, prelude::Distribution, seq::SliceRandom, Rng};
 
 /*
 Steps in a genetic algorithm:
@@ -20,9 +20,8 @@ fn algorithm(population: MyPopulation) -> Solution {
     let best: Vec<bool> = population
         .iter()
         .max_by_key(|v| v.iter().filter(|b| **b).count())
-        .unwrap().to_vec();
-    // .iter().map(|p| p.iter()
-    // .map(|b| if *b { 1 } else { 0 }).sum::<i32>()).max().unwrap();
+        .unwrap()
+        .to_vec();
     let best_value = best.iter().filter(|&&b| b).count();
     println!("Current best: {}", best_value);
     if best_value == 1000 {
@@ -69,15 +68,18 @@ fn crossover(sel: Vec<SelectionPair>) -> MyPopulation {
 }
 
 fn mutate(new_gen: MyPopulation) -> MyPopulation {
-    new_gen.into_iter().map(|mut chromosome| {
-        let mut rng = rand::thread_rng();
-        if rng.gen_range(0.0..1.0) < 0.05 {
-            chromosome.shuffle(&mut rng);
-            chromosome
-        } else {
-            chromosome            
-        }
-    }).collect()
+    new_gen
+        .into_iter()
+        .map(|mut chromosome| {
+            let mut rng = rand::thread_rng();
+            if rng.gen_range(0.0..1.0) < 0.05 {
+                chromosome.shuffle(&mut rng);
+                chromosome
+            } else {
+                chromosome
+            }
+        })
+        .collect()
 }
 
 fn main() {
